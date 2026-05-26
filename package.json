@@ -1,0 +1,24 @@
+{
+  "name": "@liquid-bricks/agent-component-browser",
+  "version": "1.0.0",
+  "description": "Browser WebWorker component agent for registering and executing Liquid Bricks components over WebSocket.",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./worker": "./componentAgentBrowser/worker.js",
+    "./componentOperations": "./componentAgentBrowser/componentOperations.js",
+    "./codes": "./componentAgentBrowser/codes.js"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "test": "node test/run.js"
+  },
+  "dependencies": {
+    "@liquid-bricks/agent-component": "github:LiquidBricks/agent-component#c3ec4da4461e6bac49d442637ad5bbf53e148f34",
+    "@liquid-bricks/lib-component-builder": "github:LiquidBricks/lib-component-builder#311b3a49df58f9c1f03f9eaf6720b3d0dbc37faa",
+    "@liquid-bricks/lib-diagnostics": "github:LiquidBricks/lib-diagnostics#7b27e34c65bcbfb75a3c16aaae7ace38bd5f2636",
+    "@liquid-bricks/lib-nats-subject": "github:LiquidBricks/lib-nats-subject#8d2f242951a919ba8f213a5a38f7b49546592548"
+  },
+  "license": "ISC"
+}
