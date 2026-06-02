@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-
 import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic';
 import { s } from '@liquid-bricks/lib-component-builder/component/builder/helper';
 import { createWorkerComponentAgent } from '../../componentAgentBrowser/workerAgent.js';
@@ -12,6 +11,9 @@ import {
   createComputeResultDoneSubject,
 } from '../../componentAgentBrowser/subjects.js';
 import { createMemoryDiagnostics, waitFor, writeModule } from '../helpers.mjs';
+
+import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
+
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const builderImportPath = '@liquid-bricks/lib-component-builder/component/builder';
@@ -50,14 +52,9 @@ class FakeWebSocket {
 }
 
 function createComputeSubject() {
-  return createSubject()
+  return createSubject(natsEvents['*'].component_service['*']['*'].exec.component.compute_result.v1['*'])
     .env('prod')
-    .ns('component-service')
     .context('component-agent')
-    .channel('exec')
-    .entity('component')
-    .action('compute_result')
-    .version('v1')
     .build();
 }
 

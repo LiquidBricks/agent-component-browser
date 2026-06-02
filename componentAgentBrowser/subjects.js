@@ -1,37 +1,25 @@
 import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic';
 
+import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
+
+
 export function createRegisterComponentsSubject() {
-  return createSubject()
+  return createSubject(natsEvents['*'].component_service['*']['*'].cmd.agent.register_components.v1['*'])
     .env('prod')
-    .ns('component-service')
     .context('component-agent')
-    .channel('cmd')
-    .entity('agent')
-    .action('register-components')
-    .version('v1')
     .build();
 }
 
 export function createComponentRegistrationSubject() {
-  return createSubject()
+  return createSubject(natsEvents['*'].component_service['*']['*'].cmd.component.register.v1['*'])
     .env('prod')
-    .ns('component-service')
     .context('component-agent')
-    .entity('component')
-    .channel('cmd')
-    .action('register')
-    .version('v1')
     .build();
 }
 
 export function createComputeResultDoneSubject() {
-  return createSubject()
+  return createSubject(natsEvents['*'].component_service['*']['*'].evt.component.computeResultDone.v1['*'])
     .env('prod')
-    .ns('component-service')
     .context('component-agent')
-    .entity('component')
-    .channel('evt')
-    .action('computeResultDone')
-    .version('v1')
     .build();
 }
