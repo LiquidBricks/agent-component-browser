@@ -3,8 +3,13 @@ import { Codes } from '../../codes.js';
 import { decodeData } from '../middleware.js';
 import { createComputeResultDoneSubject } from '../../subjects.js';
 import { createValidateExecutionRequest } from './helper.js';
+import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
+import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
 
-export const path = { channel: 'exec', entity: 'component', action: 'compute_result' };
+export const path = createSubject(natsEvents['*'].component_service['*']['*'].exec.component.compute_result.v1['*'])
+  .forSubscribe()
+  .context('component-agent')
+  .toObject()
 export const spec = {
   decode: [
     decodeData(['instanceId', 'deps', 'componentHash', 'name', 'type']),

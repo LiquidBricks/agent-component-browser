@@ -3,8 +3,13 @@ import { getAgentFns, getComponents } from '../../componentOperations.js';
 import { Codes } from '../../codes.js';
 import { decodeData } from '../middleware.js';
 import { createComponentRegistrationSubject } from '../../subjects.js';
+import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
+import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
 
-export const path = { channel: 'cmd', entity: 'agent', action: 'register-components' };
+export const path = createSubject(natsEvents['*'].component_service['*']['*'].cmd.agent.register_components.v1['*'])
+  .forSubscribe()
+  .context('component-agent')
+  .toObject()
 export const spec = {
   decode: [
     decodeData(['files']),
