@@ -15,7 +15,7 @@
     "test": "node test/run.js"
   },
   "dependencies": {
-    "@liquid-bricks/agent-component": "github:LiquidBricks/agent-component#f09b2a2921ccead030198dd445658ad431b47353",
+    "@liquid-bricks/agent-component": "github:LiquidBricks/agent-component#284054fe3973c3cef501aa287eb929c15606f180",
     "@liquid-bricks/lib-component-builder": "github:LiquidBricks/lib-component-builder#311b3a49df58f9c1f03f9eaf6720b3d0dbc37faa",
     "@liquid-bricks/lib-diagnostics": "github:LiquidBricks/lib-diagnostics#7b27e34c65bcbfb75a3c16aaae7ace38bd5f2636",
     "@liquid-bricks/lib-nats-subject": "github:LiquidBricks/lib-nats-subject#91d8d79aee3797a332b4d3f4fd0254b9ac727d04"
