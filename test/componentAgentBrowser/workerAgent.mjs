@@ -52,7 +52,7 @@ class FakeWebSocket {
 }
 
 function createComputeSubject() {
-  return createSubject(natsEvents['*'].component_service['*'].agent.exec.component.compute_result.v1['*']).forPublish()
+  return createSubject(natsEvents['*'].agent['*']['*'].cmd.component.compute_function.v1['*']).forPublish()
     .env('prod')
     .build();
 }

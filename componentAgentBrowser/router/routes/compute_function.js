@@ -6,7 +6,7 @@ import { createValidateExecutionRequest } from './helper.js';
 import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
 import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
 
-export const path = createSubject(natsEvents['*'].component_service['*'].agent.exec.component.compute_result.v1['*'])
+export const path = createSubject(natsEvents['*'].agent['*']['*'].cmd.component.compute_function.v1['*'])
   .forSubscribe()
   .toObject()
 export const spec = {

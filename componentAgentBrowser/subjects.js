@@ -18,8 +18,7 @@ export function createComponentRegistrationSubject() {
 }
 
 export function createComputeResultDoneSubject() {
-  return createSubject(natsEvents['*'].component_service['*']['*'].evt.component.computeResultDone.v1['*']).forPublish()
+  return createSubject(natsEvents['*'].gateway['*'].function_result.evt.component.compute_function.v1['*']).forPublish()
     .env('prod')
-    .context('component-agent')
     .build();
 }
