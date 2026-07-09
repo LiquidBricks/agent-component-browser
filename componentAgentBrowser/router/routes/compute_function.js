@@ -1,7 +1,6 @@
 import { s } from '@liquid-bricks/lib-component-builder/component/builder/helper';
 import { Codes } from '../../codes.js';
 import { decodeData } from '../middleware.js';
-import { createComputeResultDoneSubject } from '../../subjects.js';
 import { createValidateExecutionRequest } from './helper.js';
 import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
 import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
@@ -114,7 +113,10 @@ function getRequestedAgentFnAliases(node) {
 async function publishComputeResultDone({ scope, rootCtx: { publish } }) {
   const { instanceId, result, type, name } = scope;
   await publish(
-    createComputeResultDoneSubject(),
+    createSubject(natsEvents['*'].gateway['*'].function_result.evt.component.compute_function.v1['*'])
+      .forPublish()
+      .env('prod')
+      .build(),
     { instanceId, name, type, result },
   );
 }

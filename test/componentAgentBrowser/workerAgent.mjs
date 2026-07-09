@@ -6,10 +6,6 @@ import { fileURLToPath } from 'node:url';
 import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic';
 import { s } from '@liquid-bricks/lib-component-builder/component/builder/helper';
 import { createWorkerComponentAgent } from '../../componentAgentBrowser/workerAgent.js';
-import {
-  createComponentRegistrationSubject,
-  createComputeResultDoneSubject,
-} from '../../componentAgentBrowser/subjects.js';
 import { createMemoryDiagnostics, waitFor, writeModule } from '../helpers.mjs';
 
 import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
@@ -51,11 +47,21 @@ class FakeWebSocket {
   }
 }
 
-function createComputeSubject() {
-  return createSubject(natsEvents['*'].agent['*']['*'].cmd.component.compute_function.v1['*']).forPublish()
-    .env('prod')
-    .build();
-}
+const componentRegistrationSubject = createSubject(natsEvents['*'].component_service['*']['*'].cmd.component.register.v1['*'])
+  .forPublish()
+  .env('prod')
+  .context('component-agent')
+  .build();
+
+const computeResultDoneSubject = createSubject(natsEvents['*'].gateway['*'].function_result.evt.component.compute_function.v1['*'])
+  .forPublish()
+  .env('prod')
+  .build();
+
+const computeSubject = createSubject(natsEvents['*'].agent['*']['*'].cmd.component.compute_function.v1['*'])
+  .forPublish()
+  .env('prod')
+  .build();
 
 test('worker agent registers components on WebSocket open', async (t) => {
   FakeWebSocket.instances.length = 0;
@@ -89,7 +95,7 @@ test('worker agent registers components on WebSocket open', async (t) => {
   await socket.dispatch('open');
 
   const registration = await waitFor(() => socket.sent.find(
-    (message) => message.subject === createComponentRegistrationSubject(),
+    (message) => message.subject === componentRegistrationSubject,
   ));
 
   assert.ok(registration);
@@ -127,13 +133,13 @@ test('worker agent computes component results and publishes completion events', 
   const socket = FakeWebSocket.instances[0];
   await socket.dispatch('open');
   const registration = await waitFor(() => socket.sent.find(
-    (message) => message.subject === createComponentRegistrationSubject(),
+    (message) => message.subject === componentRegistrationSubject,
   ));
   assert.ok(registration);
 
   await socket.dispatch('message', {
     data: JSON.stringify({
-      subject: createComputeSubject(),
+      subject: computeSubject,
       data: {
         instanceId: 'instance-1',
         deps: { inputs: { a: 2, b: 5 } },
@@ -145,7 +151,7 @@ test('worker agent computes component results and publishes completion events', 
   });
 
   const resultMessage = socket.sent.find(
-    (message) => message.subject === createComputeResultDoneSubject(),
+    (message) => message.subject === computeResultDoneSubject,
   );
   assert.ok(resultMessage);
   assert.deepEqual(resultMessage.data, {
@@ -197,13 +203,13 @@ test('worker agent exposes registered agentFns during compute execution', async 
   const socket = FakeWebSocket.instances[0];
   await socket.dispatch('open');
   const registration = await waitFor(() => socket.sent.find(
-    (message) => message.subject === createComponentRegistrationSubject(),
+    (message) => message.subject === componentRegistrationSubject,
   ));
   assert.ok(registration);
 
   await socket.dispatch('message', {
     data: JSON.stringify({
-      subject: createComputeSubject(),
+      subject: computeSubject,
       data: {
         instanceId: 'instance-2',
         deps: {},
@@ -215,7 +221,7 @@ test('worker agent exposes registered agentFns during compute execution', async 
   });
 
   const resultMessage = socket.sent.find(
-    (message) => message.subject === createComputeResultDoneSubject(),
+    (message) => message.subject === computeResultDoneSubject,
   );
   assert.equal(resultMessage.data.result, 42);
 })

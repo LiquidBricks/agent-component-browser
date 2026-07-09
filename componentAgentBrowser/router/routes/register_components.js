@@ -2,7 +2,6 @@ import { s } from '@liquid-bricks/lib-component-builder/component/builder/helper
 import { getAgentFns, getComponents } from '../../componentOperations.js';
 import { Codes } from '../../codes.js';
 import { decodeData } from '../middleware.js';
-import { createComponentRegistrationSubject } from '../../subjects.js';
 import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
 import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
 
@@ -54,7 +53,11 @@ async function registerComponentsAndPublish({
   componentStore.set(components);
   agentFnStore.set(agentFns);
 
-  const registrationSubject = createComponentRegistrationSubject();
+  const registrationSubject = createSubject(natsEvents['*'].component_service['*']['*'].cmd.component.register.v1['*'])
+    .forPublish()
+    .env('prod')
+    .context('component-agent')
+    .build();
   for (const [, comp] of components) {
     const registration = await comp[s.INTERNALS].registration();
     await publish(registrationSubject, registration);

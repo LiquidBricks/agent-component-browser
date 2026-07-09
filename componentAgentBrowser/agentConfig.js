@@ -1,5 +1,6 @@
 import { Codes } from './codes.js';
-import { createRegisterComponentsSubject } from './subjects.js';
+import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic';
+import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats';
 
 export const DEFAULT_BACKOFF = {
   initialDelayMs: 1_000,
@@ -63,7 +64,11 @@ export function createAgentConfig({
     protocols,
     files,
     endpoint,
-    registerComponentsSubject: createRegisterComponentsSubject(),
+    registerComponentsSubject: createSubject(natsEvents['*'].component_service['*']['*'].cmd.agent.register_components.v1['*'])
+      .forPublish()
+      .env('prod')
+      .context('component-agent')
+      .build(),
     backoff: { ...DEFAULT_BACKOFF, ...(backoff ?? {}) },
     concurrentQueueLimit: concurrentQueueLimit ?? DEFAULT_QUEUE_LIMIT,
   };
