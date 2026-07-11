@@ -9,7 +9,14 @@ export const path = createSubject(natsEvents['*'].component_service['*']['*'].cm
   .forSubscribe()
   .context('component-agent')
   .toObject()
+
+export const emits = {
+  'component_service.cmd.component.register.v1':
+    natsEvents['*'].component_service['*']['*'].cmd.component.register.v1['*'],
+}
+
 export const spec = {
+  context: { emits },
   decode: [
     decodeData(['files']),
   ],
@@ -37,6 +44,7 @@ function ensureFilesProvided({ scope: { files }, rootCtx: { diagnostics } }) {
 async function registerComponentsAndPublish({
   scope: { files },
   rootCtx: { diagnostics, componentStore, agentFnStore, publish },
+  routeCtx: { emits },
   message,
 }) {
   const [components, agentFns] = await Promise.all([
@@ -53,7 +61,7 @@ async function registerComponentsAndPublish({
   componentStore.set(components);
   agentFnStore.set(agentFns);
 
-  const registrationSubject = createSubject(natsEvents['*'].component_service['*']['*'].cmd.component.register.v1['*'])
+  const registrationSubject = createSubject(emits['component_service.cmd.component.register.v1'])
     .forPublish()
     .env('prod')
     .context('component-agent')

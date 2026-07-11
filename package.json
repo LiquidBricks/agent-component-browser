@@ -15,10 +15,10 @@
     "test": "node test/run.js"
   },
   "dependencies": {
-    "@liquid-bricks/agent-component": "github:LiquidBricks/agent-component#4a43d120c254b15f103f57ff408cda992083cb27",
+    "@liquid-bricks/agent-component": "github:LiquidBricks/agent-component#7dec09892e106ac5d54e5d810678f2f389c1f871",
     "@liquid-bricks/lib-component-builder": "github:LiquidBricks/lib-component-builder#311b3a49df58f9c1f03f9eaf6720b3d0dbc37faa",
     "@liquid-bricks/lib-diagnostics": "github:LiquidBricks/lib-diagnostics#7b27e34c65bcbfb75a3c16aaae7ace38bd5f2636",
-    "@liquid-bricks/lib-nats-subject": "github:LiquidBricks/lib-nats-subject#51bdea5839a0d1ba9ed7410441576ff609851f12"
+    "@liquid-bricks/lib-nats-subject": "github:LiquidBricks/lib-nats-subject#983f8c1b6213d946aa53d43513e6c2292efe47dd"
   },
   "license": "ISC"
 }

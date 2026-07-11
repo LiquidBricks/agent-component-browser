@@ -8,7 +8,14 @@ import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nat
 export const path = createSubject(natsEvents['*'].agent['*']['*'].cmd.component.compute_function.v1['*'])
   .forSubscribe()
   .toObject()
+
+export const emits = {
+  'gateway.function_result.evt.component.compute_function.v1':
+    natsEvents['*'].gateway['*'].function_result.evt.component.compute_function.v1['*'],
+}
+
 export const spec = {
+  context: { emits },
   decode: [
     decodeData(['instanceId', 'deps', 'componentHash', 'name', 'type']),
   ],
@@ -110,10 +117,10 @@ function getRequestedAgentFnAliases(node) {
   );
 }
 
-async function publishComputeResultDone({ scope, rootCtx: { publish } }) {
+async function publishComputeResultDone({ scope, rootCtx: { publish }, routeCtx: { emits } }) {
   const { instanceId, result, type, name } = scope;
   await publish(
-    createSubject(natsEvents['*'].gateway['*'].function_result.evt.component.compute_function.v1['*'])
+    createSubject(emits['gateway.function_result.evt.component.compute_function.v1'])
       .forPublish()
       .env('prod')
       .build(),
