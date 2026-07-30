@@ -1,6 +1,6 @@
 import { s } from '@liquid-bricks/lib-component-builder/component/builder/helper';
 import { getAgentFns, getComponents } from '../../componentOperations.js';
-import { Codes } from '../../codes.js';
+import { PRECONDITION_INVALID, PRECONDITION_REQUIRED } from '@liquid-bricks/lib-diagnostics/codes';
 import { decodeData } from '../middleware.js';
 import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
 import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
@@ -29,13 +29,13 @@ export const spec = {
 function ensureFilesProvided({ scope: { files }, rootCtx: { diagnostics } }) {
   diagnostics.require(
     Array.isArray(files),
-    Codes.PRECONDITION_INVALID,
+    PRECONDITION_INVALID,
     'files must be an array',
     { field: 'files' },
   );
   diagnostics.require(
     files.length > 0,
-    Codes.PRECONDITION_REQUIRED,
+    PRECONDITION_REQUIRED,
     'files is required',
     { field: 'files' },
   );
@@ -53,7 +53,7 @@ async function registerComponentsAndPublish({
   ]);
   diagnostics.require(
     components.size > 0,
-    Codes.PRECONDITION_REQUIRED,
+    PRECONDITION_REQUIRED,
     'No components found in files: ' + files.join(', '),
     { files },
   );

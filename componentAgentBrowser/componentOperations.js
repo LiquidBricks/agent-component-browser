@@ -1,5 +1,5 @@
 import { s } from '@liquid-bricks/lib-component-builder/component/builder/helper';
-import { Codes } from './codes.js';
+import { PRECONDITION_INVALID, PRECONDITION_REQUIRED } from '@liquid-bricks/lib-diagnostics/codes';
 
 export function getComponentFiles(files) {
   return filterFilesBySuffix(files, '.comp.js');
@@ -20,7 +20,7 @@ export async function getComponents(files, diagnostics) {
     const mod = await import(href);
     diagnostics.require(
       'default' in mod,
-      Codes.PRECONDITION_REQUIRED,
+      PRECONDITION_REQUIRED,
       `Flow file ${href} must have a default export (component or array of components)`,
       { file: href },
     );
@@ -29,7 +29,7 @@ export async function getComponents(files, diagnostics) {
     const list = Array.isArray(def) ? def : [def];
     diagnostics.require(
       list.every((comp) => comp?.[s.IDENTITY.COMPONENT]),
-      Codes.PRECONDITION_INVALID,
+      PRECONDITION_INVALID,
       `Flow file ${href} default export contains a non-component item`,
       { file: href },
     );
@@ -42,7 +42,7 @@ export async function getComponents(files, diagnostics) {
       const existingNameSource = byName.get(name);
       diagnostics.require(
         !existingNameSource,
-        Codes.PRECONDITION_INVALID,
+        PRECONDITION_INVALID,
         `Duplicate component name detected: "${name}"`,
         {
           name,
@@ -59,7 +59,7 @@ export async function getComponents(files, diagnostics) {
       const existingHashSource = byHashSource.get(h);
       diagnostics.require(
         !existingHashSource,
-        Codes.PRECONDITION_INVALID,
+        PRECONDITION_INVALID,
         `Duplicate component hash detected: "${h}"`,
         {
           hash: h,
@@ -90,7 +90,7 @@ export async function getAgentFns(files, diagnostics) {
     const exports = collectAgentFnExports(mod);
     diagnostics.require(
       exports.length > 0,
-      Codes.PRECONDITION_REQUIRED,
+      PRECONDITION_REQUIRED,
       `Agent function file ${href} must export an agentFn or array of agentFns`,
       { file: href },
     );
@@ -99,7 +99,7 @@ export async function getAgentFns(files, diagnostics) {
       const normalized = normalizeAgentFn(value);
       diagnostics.require(
         normalized,
-        Codes.PRECONDITION_INVALID,
+        PRECONDITION_INVALID,
         `Agent function file ${href} export contains a non-agentFn item`,
         { file: href, exportName, exportIndex },
       );
@@ -109,7 +109,7 @@ export async function getAgentFns(files, diagnostics) {
       const existingSource = byPortAddrSource.get(portAddr);
       diagnostics.require(
         !existingSource,
-        Codes.PRECONDITION_INVALID,
+        PRECONDITION_INVALID,
         `Duplicate agentFn portAddr detected: "${portAddr}"`,
         {
           portAddr,

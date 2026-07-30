@@ -1,4 +1,4 @@
-const UNKNOWN_CODE = 'UNKNOWN';
+import { UNKNOWN } from '@liquid-bricks/lib-diagnostics/codes';
 
 export class WorkerDiagnosticError extends Error {
   constructor({ type, code, message, meta, cause }) {
@@ -51,7 +51,7 @@ export function createWorkerDiagnostics({
     },
     warn(cond, code, msg, meta) {
       if (cond) return;
-      emit('warn', { code: code ?? UNKNOWN_CODE, msg, meta });
+      emit('warn', { code: code ?? UNKNOWN, msg, meta });
     },
     info(msg, meta) {
       emit('info', { msg, meta });
@@ -59,8 +59,9 @@ export function createWorkerDiagnostics({
     debug(msg, meta) {
       emit('debug', { msg, meta });
     },
-    timer(name, baseTimerMeta) {
+    timer(name, baseTimerMeta, options) {
       const start = now();
+      const code = options?.code ?? `TIMER_${name}`;
       return {
         stop(extraMeta) {
           const durationMs = now() - start;
@@ -69,7 +70,7 @@ export function createWorkerDiagnostics({
             ...extraMeta,
             duration_ms: durationMs,
           };
-          emit('info', { code: `TIMER_${name}`, msg: 'timer.stop', meta });
+          emit('info', { code, msg: 'timer.stop', meta });
           return durationMs;
         },
       };

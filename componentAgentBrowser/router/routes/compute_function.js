@@ -1,5 +1,5 @@
 import { s } from '@liquid-bricks/lib-component-builder/component/builder/helper';
-import { Codes } from '../../codes.js';
+import { PRECONDITION_INVALID, PRECONDITION_REQUIRED } from '@liquid-bricks/lib-diagnostics/codes';
 import { decodeData } from '../middleware.js';
 import { createValidateExecutionRequest } from './helper.js';
 import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
@@ -46,7 +46,7 @@ async function executeNode({
   if (type === 'gate') {
     diagnostics.require(
       result === true || result === false,
-      Codes.PRECONDITION_INVALID,
+      PRECONDITION_INVALID,
       'gate fnc must return true or false',
       { instanceId, name, type, result },
     );
@@ -64,7 +64,7 @@ function buildAgentFnContext({ diagnostics, agentFnStore, component, node, insta
   const registeredAgentFns = component?.[s.INTERNALS]?.nodes?.agentFns;
   diagnostics.require(
     registeredAgentFns && registeredAgentFns.size > 0,
-    Codes.PRECONDITION_INVALID,
+    PRECONDITION_INVALID,
     'agentFn alias not registered on component',
     { instanceId, name, type, aliases: Array.from(requestedAliases) },
   );
@@ -72,7 +72,7 @@ function buildAgentFnContext({ diagnostics, agentFnStore, component, node, insta
   const agentFns = agentFnStore?.get?.();
   diagnostics.require(
     agentFns,
-    Codes.PRECONDITION_REQUIRED,
+    PRECONDITION_REQUIRED,
     'agentFn store is empty',
     { instanceId, name, type },
   );
@@ -82,7 +82,7 @@ function buildAgentFnContext({ diagnostics, agentFnStore, component, node, insta
     const registered = registeredAgentFns.get(alias);
     diagnostics.require(
       registered,
-      Codes.PRECONDITION_INVALID,
+      PRECONDITION_INVALID,
       'agentFn alias not registered on component',
       { instanceId, name, type, alias },
     );
@@ -91,13 +91,13 @@ function buildAgentFnContext({ diagnostics, agentFnStore, component, node, insta
     const agentFn = agentFns.get(portAddr);
     diagnostics.require(
       agentFn,
-      Codes.PRECONDITION_INVALID,
+      PRECONDITION_INVALID,
       'agentFn not found for execution',
       { instanceId, name, type, alias, portAddr },
     );
     diagnostics.require(
       !hash || hash === agentFn.hash,
-      Codes.PRECONDITION_INVALID,
+      PRECONDITION_INVALID,
       'agentFn hash mismatch',
       { instanceId, name, type, alias, portAddr, expectedHash: hash, actualHash: agentFn.hash },
     );

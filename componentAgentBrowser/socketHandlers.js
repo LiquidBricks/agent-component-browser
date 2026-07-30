@@ -1,4 +1,4 @@
-import { Codes } from './codes.js';
+import { AGENT_REGISTRATION_FAILED, AGENT_SOCKET_ERROR, PRECONDITION_INVALID } from '@liquid-bricks/lib-diagnostics/codes';
 
 export function createSocketHandlers({
   diagnostics,
@@ -18,7 +18,7 @@ export function createSocketHandlers({
     })().catch((error) => {
       diagnostics.warn(
         false,
-        Codes.AGENT_REGISTRATION_FAILED,
+        AGENT_REGISTRATION_FAILED,
         'Browser component agent registration error',
         { error },
       );
@@ -35,7 +35,7 @@ export function createSocketHandlers({
     } catch (error) {
       diagnostics.warn(
         false,
-        Codes.PRECONDITION_INVALID,
+        PRECONDITION_INVALID,
         'componentDispatcher received invalid JSON',
         {
           raw: normalizedRaw,
@@ -61,7 +61,7 @@ export function createSocketHandlers({
   const handleError = (event) => {
     diagnostics.warn(
       false,
-      Codes.AGENT_SOCKET_ERROR,
+      AGENT_SOCKET_ERROR,
       'Browser component agent error',
       { error: event?.error ?? event?.message ?? event?.type ?? event },
     );

@@ -7,17 +7,15 @@
   "exports": {
     ".": "./index.js",
     "./worker": "./componentAgentBrowser/worker.js",
-    "./componentOperations": "./componentAgentBrowser/componentOperations.js",
-    "./codes": "./componentAgentBrowser/codes.js"
+    "./componentOperations": "./componentAgentBrowser/componentOperations.js"
   },
   "sideEffects": false,
   "scripts": {
     "test": "node test/run.js"
   },
   "dependencies": {
-    "@liquid-bricks/agent-component": "github:LiquidBricks/agent-component#e892bb3478ef2b649fa02a2cc0cdd246a311f2b3",
-    "@liquid-bricks/lib-component-builder": "github:LiquidBricks/lib-component-builder#311b3a49df58f9c1f03f9eaf6720b3d0dbc37faa",
-    "@liquid-bricks/lib-diagnostics": "github:LiquidBricks/lib-diagnostics#7b27e34c65bcbfb75a3c16aaae7ace38bd5f2636",
+    "@liquid-bricks/lib-component-builder": "github:LiquidBricks/lib-component-builder#4e431a069411de120d4dd3af2e2727dba2ff16a0",
+    "@liquid-bricks/lib-diagnostics": "github:LiquidBricks/lib-diagnostics#2eb9d8e992f1fa656386877c8ff65adbdd2f651e",
     "@liquid-bricks/lib-nats-subject": "github:LiquidBricks/lib-nats-subject#c79bce410616813500814e598afeeaea5ebe3216"
   },
   "license": "ISC"

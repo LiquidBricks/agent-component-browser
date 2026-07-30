@@ -1,4 +1,4 @@
-import { Codes } from './codes.js';
+import { AGENT_SOCKET_ERROR } from '@liquid-bricks/lib-diagnostics/codes';
 import { createAgentConfig, normalizeFileReferences } from './agentConfig.js';
 import { MESSAGE_SOURCE } from './protocol.js';
 const defaultWorkerUrl = new URL('./worker.js', import.meta.url);
@@ -92,7 +92,7 @@ function attachWorkerDiagnostics({ worker, diagnostics }) {
 
     diagnostics.warn(
       false,
-      code ?? Codes.AGENT_SOCKET_ERROR,
+      code ?? AGENT_SOCKET_ERROR,
       msg ?? 'Browser component agent diagnostic',
       meta,
     );
