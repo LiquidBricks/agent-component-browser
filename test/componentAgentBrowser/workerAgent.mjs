@@ -47,10 +47,9 @@ class FakeWebSocket {
   }
 }
 
-const componentRegistrationSubject = createSubject(natsEvents['*'].component_service['*']['*'].cmd.component.register.v1['*'])
+const componentRegistrationSubject = createSubject(natsEvents['*'].component_service['*']['component-agent'].cmd.component.register.v1['*'])
   .forPublish()
   .env('prod')
-  .context('component-agent')
   .build();
 
 const computeResultDoneSubject = createSubject(natsEvents['*'].gateway['*'].function_result.evt.component.compute_function.v1['*'])

@@ -1,34 +1,7 @@
 import { s } from '@liquid-bricks/lib-component-builder/component/builder/helper';
 import { PRECONDITION_INVALID, PRECONDITION_REQUIRED } from '@liquid-bricks/lib-diagnostics/codes';
-import { decodeData } from '../middleware.js';
-import { createValidateExecutionRequest } from './helper.js';
-import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
-import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
 
-export const path = createSubject(natsEvents['*'].agent['*']['*'].cmd.component.compute_function.v1['*'])
-  .forSubscribe()
-  .toObject()
-
-export const emits = {
-  'gateway.function_result.evt.component.compute_function.v1':
-    natsEvents['*'].gateway['*'].function_result.evt.component.compute_function.v1['*'],
-}
-
-export const spec = {
-  context: { emits },
-  decode: [
-    decodeData(['instanceId', 'deps', 'componentHash', 'name', 'type']),
-  ],
-  pre: [
-    createValidateExecutionRequest(),
-  ],
-  handler: executeNode,
-  post: [
-    publishComputeResultDone,
-  ],
-};
-
-async function executeNode({
+export async function executeNode({
   rootCtx: { diagnostics, agentFnStore },
   scope: { component, node, instanceId, name, deps, type },
 }) {
@@ -114,16 +87,5 @@ function getRequestedAgentFnAliases(node) {
       .map((dep) => String(dep ?? '').trim().split('.'))
       .filter((parts) => parts.length === 2 && parts[0] === 'agentFn' && parts[1])
       .map((parts) => parts[1]),
-  );
-}
-
-async function publishComputeResultDone({ scope, rootCtx: { publish }, routeCtx: { emits } }) {
-  const { instanceId, result, type, name } = scope;
-  await publish(
-    createSubject(emits['gateway.function_result.evt.component.compute_function.v1'])
-      .forPublish()
-      .env('prod')
-      .build(),
-    { instanceId, name, type, result },
   );
 }

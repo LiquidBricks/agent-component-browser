@@ -1,0 +1,29 @@
+import { decodeData } from '../../middleware.js';
+import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
+import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
+import { executeNode } from './handler.js';
+import { publishComputeResultDone } from './publishComputeResultDone.js';
+import { createValidateExecutionRequest } from './validateExecutionRequest.js';
+
+export const path = createSubject(natsEvents['*'].agent['*']['*'].cmd.component.compute_function.v1['*'])
+  .forSubscribe()
+  .toObject()
+
+export const emits = {
+  'gateway.function_result.evt.component.compute_function.v1':
+    natsEvents['*'].gateway['*'].function_result.evt.component.compute_function.v1['*'],
+}
+
+export const spec = {
+  context: { emits },
+  decode: [
+    decodeData(['instanceId', 'deps', 'componentHash', 'name', 'type']),
+  ],
+  pre: [
+    createValidateExecutionRequest(),
+  ],
+  handler: executeNode,
+  post: [
+    publishComputeResultDone,
+  ],
+};
