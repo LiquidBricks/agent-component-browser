@@ -158,6 +158,7 @@ test('worker agent computes component results and publishes completion events', 
     name: 'add',
     type: 'task',
     result: 7,
+    status: 'provided',
   });
 })
 

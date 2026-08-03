@@ -1,12 +1,19 @@
 import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/basic'
 
+import { COMPUTE_FUNCTION_STATUS } from './constants.js';
+import { getPublishedTerminalStatus, markTerminalPublished } from './terminalEvent.js';
+
 export async function publishComputeResultDone({ scope, rootCtx: { publish }, routeCtx: { emits } }) {
+  if (getPublishedTerminalStatus(scope)) return;
+
   const { instanceId, result, type, name } = scope;
   await publish(
     createSubject(emits['gateway.function_result.evt.component.compute_function.v1'])
       .forPublish()
       .env('prod')
       .build(),
-    { instanceId, name, type, result },
+    { instanceId, name, type, result, status: COMPUTE_FUNCTION_STATUS.PROVIDED },
   );
+
+  markTerminalPublished(scope, COMPUTE_FUNCTION_STATUS.PROVIDED);
 }

@@ -1,6 +1,7 @@
 import { router } from '@liquid-bricks/lib-nats-subject';
 import { PRECONDITION_INVALID } from '@liquid-bricks/lib-diagnostics/codes';
 import { path as computeFunctionPath, spec as computeFunctionSpec } from './routes/compute_function/index.js';
+import { isTerminalPublishFailure } from './routes/compute_function/terminalEvent.js';
 import { path as registerComponentsPath, spec as registerComponentsSpec } from './routes/register_components/index.js';
 
 export const routes = [
@@ -44,6 +45,12 @@ export function createExecutionRouter({
         'component provider router error',
         { error, subject: message?.subject },
       );
+
+      // Browser WebSocket commands have no durable replay primitive. Preserve
+      // the publication failure without falsely acknowledging the command.
+      if (isTerminalPublishFailure(error)) {
+        throw error;
+      }
       try {
         message?.ack?.();
       } catch (_) {

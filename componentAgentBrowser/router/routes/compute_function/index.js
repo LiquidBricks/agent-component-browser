@@ -3,6 +3,7 @@ import { create as createSubject } from '@liquid-bricks/lib-nats-subject/create/
 import { events as natsEvents } from '@liquid-bricks/lib-nats-subject/events/nats'
 import { executeNode } from './handler.js';
 import { publishComputeResultDone } from './publishComputeResultDone.js';
+import { publishComputeResultError } from './publishComputeResultError.js';
 import { createValidateExecutionRequest } from './validateExecutionRequest.js';
 
 export const path = createSubject(natsEvents['*'].agent['*']['*'].cmd.component.compute_function.v1['*'])
@@ -12,6 +13,8 @@ export const path = createSubject(natsEvents['*'].agent['*']['*'].cmd.component.
 export const emits = {
   'gateway.function_result.evt.component.compute_function.v1':
     natsEvents['*'].gateway['*'].function_result.evt.component.compute_function.v1['*'],
+  'gateway.function_result.evt.component.compute_function_failed.v1':
+    natsEvents['*'].gateway['*'].function_result.evt.component.compute_function_failed.v1['*'],
 }
 
 export const spec = {
@@ -23,6 +26,9 @@ export const spec = {
     createValidateExecutionRequest(),
   ],
   handler: executeNode,
+  onError: [
+    publishComputeResultError,
+  ],
   post: [
     publishComputeResultDone,
   ],
